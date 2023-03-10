@@ -3,69 +3,112 @@
 
 <head>
     <title>SpaceMouse Data</title>
-    <!-- Include Chart.js library -->
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <h1>SpaceMouse Data</h1>
     <canvas id="myChart"></canvas>
-
     <script>
-        // Connect to the server with Socket.IO
-        const socket = io.connect('http://localhost:3000');
+    const socket = io();
 
-        // Get the canvas element and create a new chart
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [], // X-axis labels (optional)
-                datasets: [{
-                    label: 'X', // Label for the data series
-                    data: [], // The data series
-                    borderColor: 'rgb(255, 99, 132)', // Color of the line
-                    borderWidth: 1 // Width of the line
-                }, {
-                    label: 'Y',
-                    data: [],
-                    borderColor: 'rgb(54, 162, 235)',
-                    borderWidth: 1
-                }, {
-                    label: 'Z',
-                    data: [],
-                    borderColor: 'rgb(75, 192, 192)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: false, // Don't resize the chart canvas when its container is resized
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true // Start the Y-axis at zero
-                        }
-                    }]
+    socket.on('data', data => {
+        // Update the chart with the received data
+    });
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'X',
+                            data: [],
+                            borderColor: 'red',
+                            fill: false
+                        },
+                        {
+                            label: 'Y',
+                            data: [],
+                            borderColor: 'green',
+                            fill: false
+                        },
+                        {
+                            label: 'Z',
+                            data: [],
+                            borderColor: 'blue',
+                            fill: false
+                        },                         {
+                            label: 'A',
+                            data: [],
+                            borderColor: 'yellow',
+                            fill: false
+                        }, {
+                            label: 'B',
+                            data: [],
+                            borderColor: 'black',
+                            fill: false
+                        }, {
+                            label: 'C',
+                            data: [],
+                            borderColor: 'purple',
+                            fill: false
+                        }, {
+                            label: 'H',
+                            data: [],
+                            borderColor: 'tomato',
+                            fill: false
+                        },
+                    ]
+                },
+                options: {
+
+                    scales: {
+                        x: {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Time'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Value'
+                            },
+                            // ticks: {
+                            //     suggestedMin: -100,
+                            //     suggestedMax: 100
+                            // }
+                        }  
+                    }
                 }
-            }
-        });
+            });
 
-        // Listen for data events from the server
+
         socket.on('data', function (data) {
-            console.log(`Received data of length ${data.length}`);
-            const offset = 0;
-            const x = data.readInt16LE(offset);
-            const y = data.readInt16LE(offset + 2);
-            const z = data.readInt16LE(offset + 4);
+            // Add the current time to the chart labels
+            let now = new Date();
+            chart.data.labels.push(now.toLocaleTimeString());
 
-            // Add the data to the chart
-            chart.data.labels.push('');
-            chart.data.datasets[0].data.push(x);
-            chart.data.datasets[1].data.push(y);
-            chart.data.datasets[2].data.push(z);
+            // Add the received data to the chart datasets
+            chart.data.datasets[0].data.push(data.x);
+            chart.data.datasets[1].data.push(data.y);
+            chart.data.datasets[2].data.push(data.z);
+            chart.data.datasets[3].data.push(data.a);
+            chart.data.datasets[4].data.push(data.b);
+            chart.data.datasets[5].data.push(data.c);
+            chart.data.datasets[6].data.push(data.h);
             chart.update();
         });
+
+
     </script>
+    
 </body>
 
 </html>
