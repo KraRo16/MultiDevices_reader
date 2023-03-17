@@ -1,0 +1,45 @@
+.canvas_container {
+display: flex;
+justify-content: center;
+}
+
+.canvas_section{
+    width: 900px;
+    height: 600px;
+}
+
+.canvas_section:not(:last-child){
+    margin-right: 30px;
+}
+
+.title{
+    display: flex;
+    justify-content: center;
+}
+
+.btn_chart{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.title_sub{
+    display: flex;
+    justify-content: center;
+}
+
+.canvas-slider_form{
+    display: flex;
+flex-direction: column;
+}
+
+.slider{
+    width: 100px;
+}
+
+@media screen and (max-width: 768px) {
+    .canvas_container{
+        display: flex;
+        flex-direction: column;
+    }
+}
