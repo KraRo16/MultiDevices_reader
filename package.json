@@ -2,17 +2,18 @@
   "name": "template",
   "version": "0.0.0",
   "private": true,
-
   "scripts": {
-    "start": "node ./server.js"
+    "start": "nodemon ./server.js",
+    "test": "nodemon ./server.js"
   },
   "dependencies": {
-    "chart.js": "^4.2.1",
+    "@serialport/parser-readline": "^10.5.0",
     "cors": "2.8.5",
     "cross-env": "7.0.3",
     "express": "4.17.1",
     "morgan": "1.10.0",
     "node-hid": "^2.1.2",
+    "serialport": "^10.5.0",
     "socket.io": "^4.6.1",
     "usb": "^2.8.3"
   },
@@ -23,6 +24,6 @@
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "5.2.0",
-    "nodemon": "2.0.15"
+    "nodemon": "^2.0.15"
   }
 }

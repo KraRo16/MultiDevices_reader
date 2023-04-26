@@ -28,6 +28,10 @@ justify-content: center;
     justify-content: center;
 }
 
+.active{
+background-color: green;
+}
+
 .canvas-slider_form{
     display: flex;
 flex-direction: column;

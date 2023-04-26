@@ -5,160 +5,63 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- <script src="node_modules/chart.js/dist/chart.umd.js"></script> -->
     <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <!--DELETE-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r114/three.min.js"></script>
+    <!--DELETE-->
+
+    <!-- <script src="node_modules/chart.js/dist/chart.js"></script> -->
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
   </head>
 
   <body>
-    <h1 class="title">SpaceMouse Data</h1>
+    <h1 class="title">AllyArm</h1>
     <div class="btn_chart">
-      <button class="button_item" id="start_btn_chart">START</button>
-      <button class="button_item" id="stop_btn_chart">STOP</button>
-      <button class="button_item" id="restart_btn_chart">RESTART</button>
+      <!-- <button class="mode" id="mode1">Mode 1</button>
+      <button class="mode" id="mode2">Mode 2</button> -->
+      <button class="mode" id="lockButton">Change LOCK MODE</button>
+      <button class="mode" id="mode3">Mouse 3D tilt</button>
+      <button class="mode" id="mode4">Mouse 3D</button>
+      <button class="mode" id="mode5">JoyStick</button>
+      <button class="mode" id="mode6">OttoBock X and Y</button>
+      <button class="mode" id="mode7">OttoBock Z and C</button>
+      <button class="mode" id="mode8">TouchPad X and Y</button>
+      <button class="mode" id="mode9">TouchPad Raw: X and Y</button>
     </div>
-    <canvas id="myChart"></canvas>
-    <script>
-      const socket = io();
-
-      const ctx = document.getElementById("myChart").getContext("2d");
-      const chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [
-            {
-              label: "X",
-              data: [],
-              borderColor: "red",
-              fill: false,
-            },
-            {
-              label: "Y",
-              data: [],
-              borderColor: "green",
-              fill: false,
-            },
-            {
-              label: "Z",
-              data: [],
-              borderColor: "blue",
-              fill: false,
-            },
-            {
-              label: "A",
-              data: [],
-              borderColor: "yellow",
-              fill: false,
-            },
-            {
-              label: "B",
-              data: [],
-              borderColor: "black",
-              fill: false,
-            },
-            {
-              label: "C",
-              data: [],
-              borderColor: "purple",
-              fill: false,
-            },
-            {
-              label: "H",
-              data: [],
-              borderColor: "tomato",
-              fill: false,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: "Time",
-              },
-            },
-            y: {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: "Value",
-              },
-            },
-          },
-        },
-      });
-
-      let isRenderingPos = true;
-      function startRenderingPos() {
-        isRenderingPos = true;
-        renderChartsPos();
-      }
-
-      function stopRenderingPos() {
-        isRenderingPos = false;
-      }
-
-      function renderChartsPos() {
-        socket.on("data", ({ xGraph, yGraph }) => {
-          if (!isRenderingPos) {
-            return;
-          }
-          // Add the current time to the chart labels
-          let now = new Date();
-          chart.data.labels.push(now.toLocaleTimeString());
-
-          // Add the received data to the chart datasets
-          chart.data.datasets[0].data.push(xGraph[0]);
-          chart.data.datasets[1].data.push(data.y);
-          chart.data.datasets[2].data.push(data.z);
-          chart.data.datasets[3].data.push(data.a);
-          chart.data.datasets[4].data.push(data.b);
-          chart.data.datasets[5].data.push(data.c);
-          chart.data.datasets[6].data.push(data.h);
-          chart.update();
-        });
-      }
-      document
-        .getElementById("start_btn_chart")
-        .addEventListener("click", () => {
-          startRenderingPos();
-        });
-
-      document
-        .getElementById("stop_btn_chart")
-        .addEventListener("click", () => {
-          stopRenderingPos();
-        });
-
-      document
-        .getElementById("restart_btn_chart")
-        .addEventListener("click", () => {
-          chart.data.datasets[0].data = [];
-          chart.data.datasets[1].data = [];
-          chart.data.datasets[2].data = [];
-          chart.data.datasets[3].data = [];
-          chart.data.datasets[4].data = [];
-          chart.data.datasets[5].data = [];
-          chart.data.datasets[6].data = [];
-          chart.data.labels = [];
-          chart.update();
-        });
-    </script>
-
-    <!------------------------------- BUBBLE CHART --------------------->
-    <h1 class="title">Bubble Chart</h1>
-    <div class="btn_chart">
-      <button class="mode" id="mode1">Mode 1</button>
-      <button class="mode" id="mode2">Mode 2</button>
-      <button class="mode" id="mode3">Mode 3</button>
-      <button class="mode" id="mode4">Mode 4</button>
+    <div>
+      <p>Treshold OttoBock: <span id="tresholdOttoBock"></span></p>
+      <input   
+          class="slider"
+          id="tresholdSliderOttoBock"
+          type="range"
+          min="1"
+          max="10"
+          step="1"
+          value="0"
+      />
+      <p>Filter OttoBock value: <span id="filterOttoBock"></span></p>
+      <input   
+          class="slider"
+          id="filterSliderOttoBock"
+          type="range"
+          min="0.05"
+          max="1"
+          step="0.05"
+          value="0"
+      />
+      <p>Zero X OttoBock: <span id="zeroXOttoBock"></span></p>
+      <p>Zero Y OttoBock: <span id="zeroYOttoBock"></span></p>
+      <p>Raw X OttoBock: <span id="rawX"></span></p>
+      <p>Raw Y OttoBock: <span id="rawY"></span></p>
+      <button id="calibration">Calibration</button>
     </div>
 
     <div class="canvas_container">
       <div class="canvas_section">
         <h2 class="title_sub">Axes X and Y</h2>
+        <div>
+        <h3>Offset X/Y</h3>
         <input
           class="slider"
           id="slider_XY"
@@ -168,10 +71,13 @@
           step="1"
           value="0"
         />
+        </div>
         <canvas id="bubble-chart-x-y"></canvas>
       </div>
       <div class="canvas_section">
         <h2 class="title_sub">Axes Z and C</h2>
+        <div>
+        <h3>Offset Z/C</h3>
         <input
           class="slider"
           id="slider_ZC"
@@ -181,197 +87,228 @@
           step="1"
           value="0"
         />
+        </div>
         <canvas id="bubble-chart-z-c"></canvas>
       </div>
+      <!-- <div id="graph-container" style="width: 600px;"></div> -->
     </div>
 
-    <!-------------BUBBLE CHART WITH FIX BUBBLE AXES X AND Y--------------->
-    <script>
-      const canvasXY = document.getElementById("bubble-chart-x-y");
-      const bubbleXY = canvasXY.getContext("2d");
-      let targetReachedXY = true;
-      let xTarget;
-      let yTarget;
-      let targetLimiteXY = 70;
-      let targetRangeXY = 10;
-      let numberTargetReachedXY = 0;
 
-      const bubbleChartXY = new Chart(bubbleXY, {
-        type: "bubble",
-        data: {
-          datasets: [
-            {
-              label: "Data",
-              data: [],
-              backgroundColor: "rgba(255, 99, 132, 0.6)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
-            },
-            {
-              label: "Target 1",
-              data: [{ x: 0, y: 250, r: targetRangeXY }],
-              backgroundColor: "rgba(54, 162, 235, 0.6)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: {
-              max: 100,
-              min: -100,
-            },
-            y: {
-              max: 100,
-              min: -100,
-            },
-          },
-          plugins: {
-            tooltip: {
-              enabled: false,
-            },
-          },
-        },
+
+    <script>
+            const socket = io();
+
+            const canvasXY = document.getElementById("bubble-chart-x-y");
+            const bubbleXY = canvasXY.getContext("2d");
+            const canvasZC = document.getElementById("bubble-chart-z-c");
+            const bubbleZC = canvasZC.getContext("2d");
+
+            const button = document.getElementById("lockButton");
+            let isTargetReached = true;
+
+            let targetReachedXY = true;
+            let targetReachedZC = true;
+            let xTarget;
+            let yTarget;
+            let zTarget;
+            let cTarget;
+            let targetLimiteXY = 70;
+            let targetRangeXY = 10;
+            let targetLimiteZC = 70;
+            let targetRangeZC = 10;
+            let numberTargetReachedXY = 0;
+            let numberTargetReachedZC = 0;
+
+            const bubbleChartXY = new Chart(bubbleXY, {
+              type: "bubble",
+              data: {
+                datasets: [
+                  {
+                    label: "Data",
+                    data: [],
+                    backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1,
+                  },
+                  {
+                    label: "Target 1",
+                    data: [{ x: 0, y: 250, r: targetRangeXY }],
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  x: {
+                    max: 100,
+                    min: -100,
+                  },
+                  y: {
+                    max: 100,
+                    min: -100,
+                  },
+                },
+                plugins: {
+                  tooltip: {
+                    enabled: false,
+                  },
+                },
+              },
+            });
+
+            const bubbleChartZC = new Chart(bubbleZC, {
+              type: "bubble",
+              data: {
+                datasets: [
+                  {
+                    label: "Data",
+                    data: [],
+                    backgroundColor: "rgba(255, 99, 132, 0.6)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1,
+                  },
+                  {
+                    label: "Target 2",
+                    data: [{ x: 0, y: 250, r: targetRangeZC }],
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  x: {
+                    max: 100,
+                    min: -100,
+                  },
+                  y: {
+                    max: 100,
+                    min: -100,
+                  },
+                },
+                plugins: {
+                  tooltip: {
+                    enabled: false,
+                  },
+                },
+              },
+            });
+
+            button.addEventListener("click", () => {
+          isTargetReached = !isTargetReached;
       });
 
       socket.on("data", ({ xGraph, yGraph }) => {
-        const dataset = bubbleChartXY.data.datasets[0];
-        let bubbleColor;
+                const datasetXY = bubbleChartXY.data.datasets[0];
+              const datasetZC = bubbleChartZC.data.datasets[0];
+              let bubbleColorXY;
+              let bubbleColorZC;
+              
 
-        if (dataset.data.length === 0) {
-          // If the dataset is empty, add the initial data point
-          dataset.data.push({ x: 0, y: 0, r: 10 });
-        } else {
-          // Otherwise, update the existing data point
-          const point = dataset.data[0];
-          point.x = xGraph[0];
-          point.y = yGraph[0];
-        }
-        if (targetReachedXY) {
-          xTarget = (Math.random() * 2 - 1) * targetLimiteXY;
-          yTarget = (Math.random() * 2 - 1) * targetLimiteXY;
-          targetReachedXY = false;
-        }
+              if (datasetXY.data.length === 0) {
+                datasetXY.data.push({ x: 0, y: 0, r: 10 });
+              } else {
+                const point = datasetXY.data[0];
+                point.x = xGraph[0];
+                point.y = yGraph[0];
+              }
+              if (datasetZC.data.length === 0) {
+                datasetZC.data.push({ x: 0, y: 0, r: 10 });
+              } else {
+                const point = datasetZC.data[0];
+                point.x = xGraph[1];
+                point.y = yGraph[1];
+              }
 
-        if (
-          xGraph[0] > xTarget - targetRangeXY &&
-          xGraph[0] < xTarget + targetRangeXY &&
-          yGraph[0] > yTarget - targetRangeXY &&
-          yGraph[0] < yTarget + targetRangeXY
-        ) {
-          numberTargetReachedXY++;
-          if (numberTargetReachedXY > 5) {
-            targetReachedXY = true;
-          }
-          bubbleColor = "green";
-        } else {
-          bubbleColor = "yellow";
-          numberTargetReachedXY = 0;
-        }
-        const pointTarget = bubbleChartXY.data.datasets[1].data[0];
-        pointTarget.x = xTarget;
-        pointTarget.y = yTarget;
-        bubbleChartXY.data.datasets[1].backgroundColor = bubbleColor;
+              if(isTargetReached){
+              if (targetReachedXY) {
+                xTarget = (Math.random() * 2 - 1) * targetLimiteXY;
+                yTarget = (Math.random() * 2 - 1) * targetLimiteXY;
+                targetReachedXY = false;
+              }
+              if (targetReachedZC) {
+                cTarget = (Math.random() * 2 - 1) * targetLimiteZC;
+                zTarget = (Math.random() * 2 - 1) * targetLimiteZC;
+                targetReachedZC = false;
+              }} else {
+                if (targetReachedXY && targetReachedZC) {
+                xTarget = (Math.random() * 2 - 1) * targetLimiteXY;
+                yTarget = (Math.random() * 2 - 1) * targetLimiteXY;
+                cTarget = (Math.random() * 2 - 1) * targetLimiteZC;
+                zTarget = (Math.random() * 2 - 1) * targetLimiteZC;
+                targetReachedXY = false;
+                targetReachedZC = false;
+              }}
 
-        bubbleChartXY.update();
+
+              if (
+                xGraph[0] > xTarget - targetRangeXY &&
+                xGraph[0] < xTarget + targetRangeXY &&
+                yGraph[0] > yTarget - targetRangeXY &&
+                yGraph[0] < yTarget + targetRangeXY
+              ) {
+                numberTargetReachedXY++;
+                if (numberTargetReachedXY > 5) {
+                  targetReachedXY = true;
+                }
+                bubbleColorXY = "green";
+              } else {
+                bubbleColorXY = "yellow";
+                    targetReachedXY = false;
+                numberTargetReachedXY = 0;
+              }
+              if (
+                xGraph[1] > cTarget - targetRangeZC &&
+                xGraph[1] < cTarget + targetRangeZC &&
+                yGraph[1] > zTarget - targetRangeZC &&
+                yGraph[1] < zTarget + targetRangeZC
+              ) {
+                numberTargetReachedZC++;
+                if (numberTargetReachedZC > 5) {
+                  targetReachedZC = true;
+                }
+                bubbleColorZC = "green";
+              } else {
+                bubbleColorZC = "yellow";
+                    targetReachedZC = false;
+                numberTargetReachedZC = 0;
+              }
+
+              const pointTargetXY = bubbleChartXY.data.datasets[1].data[0];
+              pointTargetXY.x = xTarget;
+              pointTargetXY.y = yTarget;
+              bubbleChartXY.data.datasets[1].backgroundColor = bubbleColorXY;
+
+              const pointTargetZC = bubbleChartZC.data.datasets[1].data[0];
+              pointTargetZC.x = cTarget;
+              pointTargetZC.y = zTarget;
+              bubbleChartZC.data.datasets[1].backgroundColor = bubbleColorZC;
+
+              bubbleChartZC.update();
+              bubbleChartXY.update();
       });
     </script>
-
-    <!-------------BUBBLE CHART WITH FIX BUBBLE AXES Z AND C--------------->
+    
+    <script>
+        socket.on('data', (data) => { 
+        document.getElementById('tresholdOttoBock').innerHTML = data.tresholdOttoBock;
+        document.getElementById('zeroXOttoBock').innerHTML = Math.round(data.zeroXOttoBock);
+        document.getElementById('zeroYOttoBock').innerHTML = Math.round(data.zeroYOttoBock);
+        document.getElementById('rawX').innerHTML = Math.round(data.rawX);
+        document.getElementById('rawY').innerHTML = Math.round(data.rawY);
+        document.getElementById('filterOttoBock').innerHTML = data.filterOttoBock;
+        });  
+    </script>
 
     <script>
-      const canvasZC = document.getElementById("bubble-chart-z-c");
-      const bubbleZC = canvasZC.getContext("2d");
-      let targetReachedZC = true;
-      let zTarget;
-      let cTarget;
-      let targetLimiteZC = 70;
-      let targetRangeZC = 10;
-      let numberTargetReachedZC = 0;
-
-      const bubbleChartZC = new Chart(bubbleZC, {
-        type: "bubble",
-        data: {
-          datasets: [
-            {
-              label: "Data",
-              data: [],
-              backgroundColor: "rgba(255, 99, 132, 0.6)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
-            },
-            {
-              label: "Target 1",
-              data: [{ x: 0, y: 250, r: targetRangeZC }],
-              backgroundColor: "rgba(54, 162, 235, 0.6)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            x: {
-              max: 100,
-              min: -100,
-            },
-            y: {
-              max: 100,
-              min: -100,
-            },
-          },
-          plugins: {
-            tooltip: {
-              enabled: false,
-            },
-          },
-        },
-      });
-
-      socket.on("data", ({ xGraph, yGraph }) => {
-        const dataset = bubbleChartZC.data.datasets[0];
-
-        if (dataset.data.length === 0) {
-          // If the dataset is empty, add the initial data point
-          dataset.data.push({ x: 0, y: 0, r: 10 });
-        } else {
-          // Otherwise, update the existing data point
-          const point = dataset.data[0];
-          point.x = xGraph[1];
-          point.y = yGraph[1];
-        }
-        if (targetReachedZC) {
-          cTarget = (Math.random() * 2 - 1) * targetLimiteZC;
-          zTarget = (Math.random() * 2 - 1) * targetLimiteZC;
-          targetReachedZC = false;
-        }
-
-        if (
-          xGraph[1] > cTarget - targetRangeZC &&
-          xGraph[1] < cTarget + targetRangeZC &&
-          yGraph[1] > zTarget - targetRangeZC &&
-          yGraph[1] < zTarget + targetRangeZC
-        ) {
-          numberTargetReachedZC++;
-          if (numberTargetReachedZC > 5) {
-            targetReachedZC = true;
-          }
-          bubbleColor = "green";
-        } else {
-          bubbleColor = "yellow";
-          numberTargetReachedZC = 0;
-        }
-        const pointTarget = bubbleChartZC.data.datasets[1].data[0];
-        pointTarget.x = cTarget;
-        pointTarget.y = zTarget;
-        bubbleChartZC.data.datasets[1].backgroundColor = bubbleColor;
-
-        bubbleChartZC.update();
-      });
+        document.getElementById('calibration').addEventListener('click', () => {
+          socket.emit('calibrationSignal');  
+          console.log("I'M ALIVE")
+          });
     </script>
-
-    <!---------------------------BTN CHANGE TYPE(CASE IN SWITCH)--------->
 
     <script>
       const buttons = document.querySelectorAll(".mode");
@@ -379,9 +316,12 @@
         button.addEventListener("click", () => {
           const mode = button.id.slice(-1);
           socket.emit("changeType", mode);
+              buttons.forEach(btn => btn.style.backgroundColor = '');
+                button.style.backgroundColor = 'green';
         });
       });
     </script>
+    
     <script>
       const sliderXY = document.getElementById("slider_XY");
       sliderXY.addEventListener("change", (event) => {
@@ -393,6 +333,47 @@
         const newOffset2 = event.target.value;
         socket.emit("update-offset2", { offset2: newOffset2 });
       });
+      
+      const tresholdSliderOttoBock = document.getElementById("tresholdSliderOttoBock");
+      tresholdSliderOttoBock.addEventListener("change", (event) => {
+        const newTresholdOttoBock = event.target.value; 
+        socket.emit("update-tresholdOttoBock", {tresholdOttoBock: newTresholdOttoBock})
+      });
+      const filterSliderOttoBock = document.getElementById("filterSliderOttoBock");
+      filterSliderOttoBock.addEventListener("change", (event) => {
+        const newFilterOttoBock = event.target.value; 
+        socket.emit("update-filterOttoBock", {filterOttoBock: newFilterOttoBock})
+      });
+      
     </script>
+
+    <!----------------DELETE--------------------->
+    <!-- 3D -->
+    <!-- <script>
+            const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+    
+      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+      camera.position.set(0, 0, 100);
+      camera.lookAt(0, 0, 0);
+    socket.on("data", ({ xGraph, yGraph }) => {
+
+    
+      const scene = new THREE.Scene();
+      const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      const points = [];
+      points.push(new THREE.Vector3(0, 0, 0));
+      points.push(new THREE.Vector3(xGraph[0], yGraph[0], 50));
+      points.push(new THREE.Vector3(xGraph[1], yGraph[1], 10));
+    
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, material);
+      scene.add(line);
+      renderer.render(scene, camera);
+    });
+  </script>  -->
+    <!----------------DELETE--------------------->
+
   </body>
 </html>

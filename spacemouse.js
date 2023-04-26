@@ -1,49 +1,109 @@
 const HID = require("node-hid");
+const path = require("path");
 
-// Find the device path of the SpaceMouse Compact
-const devices = HID.devices();
-const devicePath = devices.find((d) => d.product === "SpaceMouse Compact").path;
+let device;
+let checkDeviceInterval;
+let spaceMouse = { x: 0, y: 0, z: 0, a: 0, b: 0, c: 0 };
 
-// Open the device
-const device = new HID.HID(devicePath);
-let spaceMouse = {};
+function checkDevice() {
+  // Find the device path of the SpaceMouse Compact
+  const devices = HID.devices();
+  const deviceInfo = devices.find((d) => d.product === "SpaceMouse Compact");
 
-spaceMouse.x = 0;
-spaceMouse.y = 0;
-spaceMouse.z = 0;
-spaceMouse.a = 0;
-spaceMouse.b = 0;
-spaceMouse.c = 0;
-
-let i = 0;
-
-// Listen for data events
-device.on("data", (data) => {
-  const offset = 1;
-
-  if (i === 0) {
-    spaceMouse.x = data.readInt16LE(offset) / 3.5;
-    spaceMouse.y = -data.readInt16LE(offset + 2) / 3.5;
-    spaceMouse.z = -data.readInt16LE(offset + 4) / 3.5;
-    i = 1;
-  } else {
-    spaceMouse.a = -data.readInt16LE(offset) / 3.5;
-    spaceMouse.b = -data.readInt16LE(offset + 2) / 3.5;
-    spaceMouse.c = data.readInt16LE(offset + 4) / 3.5;
-    i = 0;
+  if (deviceInfo) {
+    clearInterval(checkDeviceInterval);
+    // Open the device
+    device = new HID.HID(deviceInfo.path);
+    listenToDevice();
   }
+}
 
-});
+function listenToDevice() {
+  let i = 0;
 
-device.on("error", (err) => {
-  console.error(err);
-});
+  // Listen for data events
+  device.on("data", (data) => {
+    const offset = 1;
+    if (i === 0) {
+      spaceMouse.x = data.readInt16LE(offset) / 3.5;
+      spaceMouse.y = -data.readInt16LE(offset + 2) / 3.5;
+      spaceMouse.z = -data.readInt16LE(offset + 4) / 3.5;
+      i = 1;
+    } else {
+      spaceMouse.a = -data.readInt16LE(offset) / 3.5;
+      spaceMouse.b = -data.readInt16LE(offset + 2) / 3.5;
+      spaceMouse.c = data.readInt16LE(offset + 4) / 3.5;
+      i = 0;
+    }
+  });
 
-module.exports = {spaceMouse};
+  device.on("error", (err) => {
+    console.error(err);
+    checkDeviceInterval = setInterval(checkDevice, 1000);
+  });
+}
 
-// setInterval(() => {
-// //   console.log(module)
-//     console.log(`X: ${x}, Y: ${y}, Z: ${z}, RX: ${a}, RY: ${b}, RZ: ${c} T`);
+checkDeviceInterval = setInterval(checkDevice, 1000);
 
-// }, 1000)
+module.exports = { spaceMouse };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
